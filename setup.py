@@ -14,14 +14,13 @@ setuptools.setup(
     url="https://github.com/teradata/dlispy",
     packages=setuptools.find_packages(exclude=["tests.*", "tests"]),
     include_package_data=True,
-    install_requires=['atomicwrites==1.1.5',
-                      'attrs==18.1.0',
-                      'click==6.7',
-                      'more-itertools==4.3.0',
-                      'pluggy==0.7.1',
-                      'py==1.5.4',
-                      'pytest==3.7.1',
-                      'six==1.11.0'
+    install_requires=['atomicwrites==1.4.1', # 08/07/2022
+                      'attrs==24.3.0', # 16/12/2024
+                      'click==8.1.8', # 21/12/2024 
+                      'more-itertools==10.6.0', # 14/01/2025
+                      'pluggy==1.5.0', # 20/04/2024
+                      'pytest==8.3.4', # 01/12/2024
+                      'six==1.17.0' # 04/12/2024
                      ],
     python_requires='>=3.5',
     classifiers=(
