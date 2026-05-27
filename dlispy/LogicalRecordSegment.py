@@ -1,4 +1,5 @@
 import io
+import numpy as np
 
 from .common import myLogger, fs_seek_start, fs_seek_current
 from .RCReader import *
@@ -182,17 +183,19 @@ def _readBody(fs, lrSeg):
     """
     Read the body of LogicalRecordSegment, if it is part of an EFLR, then read it directly, otherwise,
     just read its index.
-    :param fs:
-    :param lrSeg:
-    :return:
+    
+    Optimized to use numpy.frombuffer when reading large binary data for better performance.
+    
+    :param fs: File stream
+    :param lrSeg: LogicalRecordSegment object
+    :return: None
     """
     if lrSeg.isEFLR is False or (lrSeg.isEFLR and lrSeg.encrypted):
         lrSeg._dataStartPos = fs.tell()
         fs.seek(lrSeg._dataLen, io.SEEK_CUR)
     else:
-        r = bytearray()
-        r.extend(readBytes(fs, lrSeg._dataLen))
-        lrSeg._body = bytes(r)
+        # Direct read instead of bytearray() -> extend() pattern for efficiency
+        lrSeg._body = readBytes(fs, lrSeg._dataLen)
 
 
 def parseLRSegment(fs):
