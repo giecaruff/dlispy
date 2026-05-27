@@ -146,7 +146,7 @@ class DlisFileTest(unittest.TestCase):
         test_file = path.join(parent_path,'data','206_05a-_3_DWL_DWL_WIRE_258276498.DLIS')
 
         df_name_without_ext = os.path.basename(test_file)[:-5]
-        complete_output_path = os.path.join('./output', df_name_without_ext)
+        complete_output_path = os.path.join('./.output', df_name_without_ext)
 
         _, lf_list = parse(test_file, eflr_only=True)
 
@@ -169,7 +169,7 @@ class DlisFileTest(unittest.TestCase):
         test_file = path.join(parent_path,'data','206_05a-_3_DWL_DWL_WIRE_258276498.DLIS')
 
         df_name_without_ext = os.path.basename(test_file)[:-5]
-        complete_output_path = os.path.join('./output', df_name_without_ext)
+        complete_output_path = os.path.join('./.output', df_name_without_ext)
 
         dump(test_file, complete_output_path)
         expected_files = ['2_0_2000T.csv','2_0_800T.csv', 'MSCT_197LTP.json']
@@ -510,7 +510,7 @@ class DlisFileTest(unittest.TestCase):
         :return: None
         """
         test_folder = path.join(parent_path,'data','public_data', 'Well_logs_Volve', 'Well_logs', '03.PRESSURE')
-        dump_all(test_folder, path.join(parent_path, 'output', 'dump_all'))
+        dump_all(test_folder, path.join(parent_path, '.output', 'dump_all'))
 
     @unittest.skip('under test')
     def testSULFile(self):
