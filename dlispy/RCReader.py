@@ -2,6 +2,7 @@ import datetime
 from enum import Enum
 from .common import JsonAble, readBytes
 from struct import Struct
+import numpy as np
 
 
 # RP66 V1 Representation code use big-endian.
@@ -649,3 +650,53 @@ def readByRC(c, stream):
     # index of READ_RC_METHOD starts from 0 but code starts from 1
     f = globals()['read'+CODE_TO_RC[c]]
     return f(stream)
+
+
+# Vectorized numpy-based reading functions for performance optimization
+def readByRC_vectorized(c, stream, count):
+    """
+    Read multiple values of the same representation code efficiently using numpy.
+    
+    For fixed-size types (FSHORT, FSINGL, FDOUBL, etc.), uses numpy.frombuffer for batch reading.
+    Falls back to element-by-element reading for variable-length types (UVARI, ASCII, IDENT, etc.).
+    
+    RP66 V1 standard uses big-endian byte order, which is preserved via explicit dtype specifications.
+    
+    :param c: Representation code (int)
+    :param stream: Input stream
+    :param count: Number of values to read
+    :return: numpy array or list of values
+    """
+    if count <= 0:
+        return np.array([])
+    
+    # Fixed-size types that benefit from vectorized reading
+    # Dtype strings explicitly specify big-endian ('>') to match RP66 V1 standard
+    fixed_size_map = {
+        1: ('>i2', 2),      # FSHORT - big-endian signed short
+        2: ('>f4', 4),      # FSINGL - big-endian float32
+        7: ('>f8', 8),      # FDOUBL - big-endian float64
+        12: ('>i2', 2),     # SSHORT - big-endian signed short
+        13: ('>i2', 2),     # SNORM - big-endian signed short
+        14: ('>i4', 4),     # SLONG - big-endian signed int32
+        15: ('>u2', 2),     # USHORT - big-endian unsigned short
+        16: ('>u2', 2),     # UNORM - big-endian unsigned short
+        17: ('>u4', 4),     # ULONG - big-endian unsigned int32
+    }
+    
+    if c in fixed_size_map:
+        dtype_str, size = fixed_size_map[c]
+        total_bytes = size * count
+        data = readBytes(stream, total_bytes)
+        if len(data) != total_bytes:
+            raise Exception(f'Not enough bytes left for {count} values of type {CODE_TO_RC[c]}')
+        
+        # Use dtype string with explicit big-endian specification
+        arr = np.frombuffer(data, dtype=dtype_str)
+        return arr
+    else:
+        # For variable-length types, fall back to element-by-element reading
+        result = []
+        for _ in range(count):
+            result.append(readByRC(c, stream))
+        return result

@@ -1,6 +1,7 @@
 import csv
 import json
 import os
+import numpy as np
 
 from .LogicalRecord import *
 from .Component import Object
@@ -219,10 +220,14 @@ class LogicalFile(JsonAble):
 
                 while bStream.tell() < eof:
                     for c in channelObjectList:
-                        if c.NumOfValue>1:
-                            slot = []
-                            for i in range(c.NumOfValue):
-                                slot.append(reader.readByRC(c.RepCode, bStream))
+                        if c.NumOfValue > 1:
+                            # Use vectorized reading for better performance
+                            slot_data = reader.readByRC_vectorized(c.RepCode, bStream, c.NumOfValue)
+                            # Convert numpy array to list for compatibility
+                            if isinstance(slot_data, np.ndarray):
+                                slot = slot_data.tolist()
+                            else:
+                                slot = slot_data
                             fData.slots.append(slot)
                         else:
                             slot = reader.readByRC(c.RepCode, bStream)
@@ -387,14 +392,16 @@ def _calculate_num_of_value(dimensionAttr):
     Based on dimension information, caculate how many size of the list when squeeze
      the high dimension value into single dimension array.
      
+    Uses numpy.prod() for better performance with multi-dimensional arrays.
+     
     :param dimensionAttr: The dimension attribute
 
     :return: An integer which specifies the size of one dimension arry
 
     """
-    if dimensionAttr.count>1: # multi dimension channel
-        from functools import reduce
-        return reduce((lambda x, y: x*y), dimensionAttr.value)
+    if dimensionAttr.count > 1:  # multi dimension channel
+        # Use numpy.prod() for better performance with multi-dimensional arrays
+        return int(np.prod(dimensionAttr.value))
     else:
         return dimensionAttr.value
 
