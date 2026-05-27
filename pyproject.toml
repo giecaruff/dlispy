@@ -1,14 +1,51 @@
 [project]
 name = "dlispy"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    'click==8.1.8',           # 21/12/2024
+authors = [
+    { name = "Teradata" },
+    { name = "GIECAR-UFF" }
 ]
+license = "BSD-3-Clause"
+description = "A python library to parse DLIS file"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "click==8.1.8",
+]
+maintainers = [
+    { name = "GIECAR-UFF" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/teradata/dlispy"
+Repository = "https://github.com/teradata/dlispy"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [dependency-groups]
 dev = [
     "pytest>=9.0.3",
 ]
+
+[tool.hatch.build]
+include = ["dlispy/**"] # Include the main package
+exclude = ["data", "docs"] # Exclude unnecessary files
+
+[tool.setuptools]
+include-package-data = true
+packages = ["dlispy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+norecursedirs = [".venv", ".git", "__pycache__"]
