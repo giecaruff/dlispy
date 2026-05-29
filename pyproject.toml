@@ -1,5 +1,5 @@
 [project]
-name = "dlispy"
+name = "dlispy-uff"
 version = "0.1.0"
 authors = [
     { name = "Teradata" },
@@ -22,10 +22,6 @@ classifiers = [
     "LICENSE :: OSI APPROVED :: BSD LICENSE",
     "Operating System :: OS Independent",
 ]
-
-[project.urls]
-Homepage = "https://github.com/teradata/dlispy"
-Repository = "https://github.com/teradata/dlispy"
 
 [tool.hatch.metadata]
 allow-direct-references = true
