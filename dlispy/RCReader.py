@@ -676,10 +676,10 @@ def readByRC_vectorized(c, stream, count):
         1: ('>i2', 2),      # FSHORT - big-endian signed short
         2: ('>f4', 4),      # FSINGL - big-endian float32
         7: ('>f8', 8),      # FDOUBL - big-endian float64
-        12: ('>i2', 2),     # SSHORT - big-endian signed short
+        12: ('>i1', 1),     # SSHORT - big-endian signed short
         13: ('>i2', 2),     # SNORM - big-endian signed short
         14: ('>i4', 4),     # SLONG - big-endian signed int32
-        15: ('>u2', 2),     # USHORT - big-endian unsigned short
+        15: ('>u1', 1),     # USHORT - big-endian unsigned short
         16: ('>u2', 2),     # UNORM - big-endian unsigned short
         17: ('>u4', 4),     # ULONG - big-endian unsigned int32
     }
